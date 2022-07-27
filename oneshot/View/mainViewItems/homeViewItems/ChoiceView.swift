@@ -11,21 +11,38 @@ struct ChoiceView: View {
     
     @EnvironmentObject var productViewModel : ProductViewModel
     @State private var isShowChoiceSheet : Bool = false
+    @State private var selectedProduct : Product = Product()
     var request : ChoiceRequest
     
     var body: some View {
         ZStack {
             List(productViewModel.currentProducts) { product in
                 Button {
+                    selectedProduct = product
                     isShowChoiceSheet.toggle()
                 } label: {
-                    ProductItem( product: product)
+                    ProductItem(product: product)
                 }
                 .sheet(isPresented: $isShowChoiceSheet) {
-                    CreateChoiceSheet(product: product)
+                    VStack {
+                        HStack {
+                            ZStack {
+                                Text(selectedProduct.productName)
+                                Button {
+                                    isShowChoiceSheet.toggle()
+                                } label: {
+                                    Image(systemName: "xmark")
+                                }
+                                .frame(alignment: .trailing)
+                            }
+                        }
+                        .padding()
+                        CreateChoiceSheet(product: $selectedProduct)
+                    }
                 }
             }
             .listStyle(.plain)
+            
             EmptyView(list: productViewModel.currentProducts, msg: "No Product")
         }
         .onAppear {

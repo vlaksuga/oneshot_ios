@@ -13,6 +13,7 @@ class RequestViewModel : ObservableObject {
     let db = Firestore.firestore()
     let formatter = ModelFormatter()
     
+    
     @Published var ownerRequests : [ChoiceRequest] = []
     @Published var currentRequests : [ChoiceRequest] = []
     
@@ -21,7 +22,7 @@ class RequestViewModel : ObservableObject {
         attachCurrentRequests(accountId: aid)
     }
     
-    func attachCurrentRequests(accountId aid : String) {
+    func attachOwnerRequests(accountId aid : String) {
         self.db.collection("accounts/\(aid)/choiceRequests")
             .whereField("createUserId", isEqualTo: aid)
             .addSnapshotListener { snapshot, error in
@@ -37,7 +38,7 @@ class RequestViewModel : ObservableObject {
         }
     }
     
-    func attachOwnerRequests(accountId aid : String) {
+    func attachCurrentRequests(accountId aid : String) {
         self.db.collection("accounts/\(aid)/choiceRequests")
             .whereField("isOpen", isEqualTo: true)
             .addSnapshotListener { snapshot, error in
